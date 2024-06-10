@@ -1,4 +1,4 @@
-# Decrease external video's volume on speak
+# Decrease external video's volume when someone speaks
 
 ## What is it?
 
