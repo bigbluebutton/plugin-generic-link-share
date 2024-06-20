@@ -5,7 +5,7 @@ import {
   ActionButtonDropdownOption,
   ActionButtonDropdownSeparator,
   BbbPluginSdk,
-  GenericComponent,
+  GenericContentMainArea,
   PluginApi,
   LayoutPresentatioAreaUiDataNames,
   UiLayouts,
@@ -25,13 +25,13 @@ function GenericLinkShare(
   const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const { data: currentUser } = pluginApi.useCurrentUser();
   const [link, setLink] = useState<string>(null);
-  const [data, dispatcher] = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
     url: null,
   });
-  const [genericComponentId, setGenericComponentId] = useState<string>('');
+  const [genericContentd, setGenericContentd] = useState<string>('');
 
   const currentLayout = pluginApi.useUiData(LayoutPresentatioAreaUiDataNames.CURRENT_ELEMENT, [{
     isOpen: true,
@@ -40,8 +40,8 @@ function GenericLinkShare(
 
   useEffect(() => {
     const isGenericComponentInPile = currentLayout.some((gc) => (
-      gc.currentElement === UiLayouts.GENERIC_COMPONENT
-      && gc.genericComponentId === genericComponentId
+      gc.currentElement === UiLayouts.GENERIC_CONTENT
+      && gc.genericContentId === genericContentd
     ));
     if (isGenericComponentInPile) {
       setShowingPresentationContent(true);
@@ -97,7 +97,7 @@ function GenericLinkShare(
       }
     }
     if (objectToDispatch) {
-      dispatcher(objectToDispatch);
+      pushEntryUrlToGenericLink(objectToDispatch);
       setShowModal(false);
     } else {
       setLinkError('Link is malformed, please insert a valid one');
@@ -106,37 +106,37 @@ function GenericLinkShare(
 
   useEffect(() => {
     if (
-      data.data
-      && data
-        .data[data.data.length - 1]?.payloadJson
+      urlToGenericLink.data
+      && urlToGenericLink
+        .data[urlToGenericLink.data.length - 1]?.payloadJson
     ) {
-      setPreviousModalState(data
+      setPreviousModalState(urlToGenericLink
         .data[
-          data.data.length - 1]?.payloadJson);
-      const isUrlTheSame = data
+          urlToGenericLink.data.length - 1]?.payloadJson);
+      const isUrlTheSame = urlToGenericLink
         .data[
-          data.data.length - 1
+          urlToGenericLink.data.length - 1
         ]?.payloadJson.isUrlSameForRole;
       if (!isUrlTheSame && !currentUser.presenter) {
-        const viewerUrl = data
+        const viewerUrl = urlToGenericLink
           .data[
-            data.data.length - 1
+            urlToGenericLink.data.length - 1
           ]?.payloadJson.viewerUrl;
         if (viewerUrl) {
           setLink(viewerUrl);
           handleChangePresentationAreaContent(true);
         }
       } else {
-        setLink(data
+        setLink(urlToGenericLink
           .data[
-            data.data.length - 1
+            urlToGenericLink.data.length - 1
           ]?.payloadJson.url);
         handleChangePresentationAreaContent(true);
       }
     } else if (
-      data.data
-      && !data
-        .data[data.data.length - 1]?.payloadJson
+      urlToGenericLink.data
+      && !urlToGenericLink
+        .data[urlToGenericLink.data.length - 1]?.payloadJson
     ) {
       setLink(null);
       setPreviousModalState({
@@ -145,7 +145,7 @@ function GenericLinkShare(
       });
       handleChangePresentationAreaContent(false);
     }
-  }, [data, currentUser]);
+  }, [urlToGenericLink, currentUser]);
 
   useEffect(() => {
     if (currentUser?.presenter) {
@@ -170,7 +170,7 @@ function GenericLinkShare(
           : 'Share a generic link into the presentation area',
         allowed: true,
         onClick: showingPresentationContent ? () => {
-          dispatcher(null);
+          pushEntryUrlToGenericLink(null);
           setShowingPresentationContent(false);
         } : () => {
           setShowModal(true);
@@ -184,9 +184,9 @@ function GenericLinkShare(
 
   useEffect(() => {
     if (link && link !== '') {
-      pluginApi.setGenericComponents([]);
-      setGenericComponentId(pluginApi.setGenericComponents([
-        new GenericComponent({
+      pluginApi.setGenericContentItems([]);
+      setGenericContentd(pluginApi.setGenericContentItems([
+        new GenericContentMainArea({
           contentFunction: (element: HTMLElement) => {
             const root = ReactDOM.createRoot(element);
             root.render(
@@ -200,7 +200,7 @@ function GenericLinkShare(
         }),
       ])[0]);
     } else {
-      pluginApi.setGenericComponents([]);
+      pluginApi.setGenericContentItems([]);
     }
   }, [link]);
 
