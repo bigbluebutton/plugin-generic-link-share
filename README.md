@@ -22,8 +22,10 @@ npm start
       url: http://127.0.0.1:4701/static/GenericLinkShare.js
       dataChannels:
         - name: urlToGenericLink
-          writePermission: ['moderator','presenter']
-          deletePermission: ['moderator', 'sender']
+          pushPermission: ['moderator','presenter']
+          replaceOrdeletePermission: 
+            - moderator
+            - sender
 ```
 
 ## Building the Plugin
@@ -36,7 +38,7 @@ npm install
 npm run build-bundle
 ```
 
-The above command will generate the `dist` folder, containing the bundled JavaScript file named `DecreaseVolumeOnSpeak.js`. This file can be hosted on any HTTPS server.
+The above command will generate the `dist` folder, containing the bundled JavaScript file named `GenericLinkShare.js`. This file can be hosted on any HTTPS server.
 
 To use the plugin with BigBlueButton, add the plugin's URL to `settings.yml` as shown below:
 
