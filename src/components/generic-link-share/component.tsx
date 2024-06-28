@@ -9,6 +9,7 @@ import {
   PluginApi,
   LayoutPresentatioAreaUiDataNames,
   UiLayouts,
+  DataChannelTypes,
 } from 'bigbluebutton-html-plugin-sdk';
 
 import GenericComponentLinkShare from '../generic-component/component';
@@ -25,7 +26,7 @@ function GenericLinkShare(
   const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const { data: currentUser } = pluginApi.useCurrentUser();
   const [link, setLink] = useState<string>(null);
-  const {data: data, pushEntry: dispatcher} = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const {data: data, pushEntry: dispatcher} = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink', DataChannelTypes.LATEST_ITEM);
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
@@ -105,39 +106,21 @@ function GenericLinkShare(
   };
 
   useEffect(() => {
-    if (
-      data.data
-      && data
-        .data[data.data.length - 1]?.payloadJson
-    ) {
-      setPreviousModalState(data
-        .data[
-          data.data.length - 1]?.payloadJson);
-      const isUrlTheSame = data
-        .data[
-          data.data.length - 1
-        ]?.payloadJson.isUrlSameForRole;
+    const latestGenericLink: DataToGenericLink | Boolean = data.data && data.data[0]?.payloadJson;
+    if (latestGenericLink?.url) {
+      setPreviousModalState(latestGenericLink);
+      const isUrlTheSame = latestGenericLink.isUrlSameForRole;
       if (!isUrlTheSame && !currentUser.presenter) {
-        const viewerUrl = data
-          .data[
-            data.data.length - 1
-          ]?.payloadJson.viewerUrl;
+        const viewerUrl = latestGenericLink.viewerUrl;
         if (viewerUrl) {
           setLink(viewerUrl);
           handleChangePresentationAreaContent(true);
         }
       } else {
-        setLink(data
-          .data[
-            data.data.length - 1
-          ]?.payloadJson.url);
+        setLink(latestGenericLink.url);
         handleChangePresentationAreaContent(true);
       }
-    } else if (
-      data.data
-      && !data
-        .data[data.data.length - 1]?.payloadJson
-    ) {
+    } else if (data.data && !latestGenericLink.url) {
       setLink(null);
       setPreviousModalState({
         isUrlSameForRole: true,
@@ -170,7 +153,12 @@ function GenericLinkShare(
           : 'Share a generic link into the presentation area',
         allowed: true,
         onClick: showingPresentationContent ? () => {
-          dispatcher(null);
+          const emptyObject: DataToGenericLink = {
+            isUrlSameForRole: null,
+            url: null,
+            viewerUrl: null,
+          };
+          dispatcher(emptyObject);
           setShowingPresentationContent(false);
         } : () => {
           setShowModal(true);
