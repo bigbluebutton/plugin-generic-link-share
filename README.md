@@ -38,7 +38,7 @@ npm install
 npm run build-bundle
 ```
 
-The above command will generate the `dist` folder, containing the bundled JavaScript file named `DecreaseVolumeOnSpeak.js`. This file can be hosted on any HTTPS server.
+The above command will generate the `dist` folder, containing the bundled JavaScript file named `GenericLinkShare.js`. This file can be hosted on any HTTPS server.
 
 To use the plugin with BigBlueButton, add the plugin's URL to `settings.yml` as shown below:
 
