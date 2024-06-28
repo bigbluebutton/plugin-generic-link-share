@@ -5,7 +5,7 @@ import {
   ActionButtonDropdownOption,
   ActionButtonDropdownSeparator,
   BbbPluginSdk,
-  GenericComponent,
+  GenericContentMainArea,
   PluginApi,
   LayoutPresentatioAreaUiDataNames,
   UiLayouts,
@@ -25,7 +25,7 @@ function GenericLinkShare(
   const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const { data: currentUser } = pluginApi.useCurrentUser();
   const [link, setLink] = useState<string>(null);
-  const [data, dispatcher] = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const {data: data, pushEntry: dispatcher} = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
@@ -40,8 +40,8 @@ function GenericLinkShare(
 
   useEffect(() => {
     const isGenericComponentInPile = currentLayout.some((gc) => (
-      gc.currentElement === UiLayouts.GENERIC_COMPONENT
-      && gc.genericComponentId === genericComponentId
+      gc.currentElement === UiLayouts.GENERIC_CONTENT
+      && gc.genericContentId === genericComponentId
     ));
     if (isGenericComponentInPile) {
       setShowingPresentationContent(true);
@@ -184,9 +184,9 @@ function GenericLinkShare(
 
   useEffect(() => {
     if (link && link !== '') {
-      pluginApi.setGenericComponents([]);
-      setGenericComponentId(pluginApi.setGenericComponents([
-        new GenericComponent({
+      pluginApi.setGenericContentItems([]);
+      setGenericComponentId(pluginApi.setGenericContentItems([
+        new GenericContentMainArea({
           contentFunction: (element: HTMLElement) => {
             const root = ReactDOM.createRoot(element);
             root.render(
@@ -200,7 +200,7 @@ function GenericLinkShare(
         }),
       ])[0]);
     } else {
-      pluginApi.setGenericComponents([]);
+      pluginApi.setGenericContentItems([]);
     }
   }, [link]);
 

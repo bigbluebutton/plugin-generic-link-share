@@ -22,8 +22,10 @@ npm start
       url: http://127.0.0.1:4701/static/GenericLinkShare.js
       dataChannels:
         - name: urlToGenericLink
-          writePermission: ['moderator','presenter']
-          deletePermission: ['moderator', 'sender']
+          pushPermission: ['moderator','presenter']
+          replaceOrdeletePermission: 
+            - moderator
+            - sender
 ```
 
 ## Building the Plugin
