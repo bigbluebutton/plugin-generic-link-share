@@ -98,6 +98,7 @@ function GenericLinkShare(
       }
     }
     if (objectToDispatch) {
+      deleteEntryUrlToGenericLink([RESET_DATA_CHANNEL]);
       pushEntryUrlToGenericLink(objectToDispatch);
       setShowModal(false);
     } else {
