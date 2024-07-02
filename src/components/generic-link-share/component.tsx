@@ -9,6 +9,7 @@ import {
   PluginApi,
   LayoutPresentatioAreaUiDataNames,
   UiLayouts,
+  RESET_DATA_CHANNEL,
 } from 'bigbluebutton-html-plugin-sdk';
 
 import GenericComponentLinkShare from '../generic-component/component';
@@ -25,7 +26,7 @@ function GenericLinkShare(
   const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const { data: currentUser } = pluginApi.useCurrentUser();
   const [link, setLink] = useState<string>(null);
-  const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink, deleteEntry: deleteEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
@@ -170,7 +171,7 @@ function GenericLinkShare(
           : 'Share a generic link into the presentation area',
         allowed: true,
         onClick: showingPresentationContent ? () => {
-          pushEntryUrlToGenericLink(null);
+          deleteEntryUrlToGenericLink([RESET_DATA_CHANNEL]);
           setShowingPresentationContent(false);
         } : () => {
           setShowModal(true);
