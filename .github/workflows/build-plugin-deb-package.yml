@@ -1,0 +1,71 @@
+---
+name: 📦 Build .deb-package for bbb-plugin-generic-link-share
+on:
+  push:
+    branches: [ "main"]
+    paths:
+      - './**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - './**'
+
+jobs:
+  build-deb-package:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # - name: Install build dependencies
+        # run: sudo ./.setup-build-dependencies.sh
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+  
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y devscripts debhelper
+
+      - run: node --version
+
+      - name: Build Debian package
+        run: sudo dpkg-buildpackage -us -uc
+
+      - name: Upload Debian Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: bbb-plugin-generic-link-share-ubuntu-22.04
+          path: "${{ github.workspace }}/*.deb"
+
+  release:
+    name: "Upload assets to release"
+    needs: build-deb-package
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_type == 'tag' }}
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: bbb-plugin-generic-link-share-ubuntu-22.04
+          path: bbb-plugin-generic-link-share-ubuntu-22.04
+
+      - name: Create release asset archives
+        run: zip --junk-paths --recurse-paths --compression-method store "bbb-plugin-generic-link-share-ubuntu-22.04.zip" "bbb-plugin-generic-link-share-ubuntu-22.04"
+
+      - name: Upload release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.ref_name }} "bbb-plugin-generic-link-share-ubuntu-22.04.zip"
+
