@@ -3,12 +3,12 @@ name: 📦 Build .deb-package for bbb-plugin-generic-link-share
 on:
   push:
     branches: [ "main"]
-    paths:
-      - './**'
+    paths-ignore:
+      - debian/changelog
   pull_request:
     branches: [ "main" ]
-    paths:
-      - './**'
+    paths-ignore:
+      - debian/changelog
 
 jobs:
   build-deb-package:
