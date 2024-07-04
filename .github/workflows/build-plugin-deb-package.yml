@@ -33,16 +33,19 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y devscripts debhelper
+          sudo apt-get install -y devscripts debhelper tree
 
       - name: Build Debian package
-        run: sudo dpkg-buildpackage -us -uc
+        run: |
+          sudo dpkg-buildpackage -us -uc
+          tree .
+          file . -name *.deb
 
       - name: Upload Debian Package
         uses: actions/upload-artifact@v4
         with:
           name: bbb-plugin-generic-link-share-ubuntu-22.04
-          path: "*.deb"
+          path: "${{ github.workspace }}/*.deb"
 
   release:
     name: "Upload assets to release"
