@@ -9,13 +9,18 @@ import {
   PluginApi,
   LayoutPresentatioAreaUiDataNames,
   UiLayouts,
+  CurrentPresentation,
   RESET_DATA_CHANNEL,
+  pluginLogger,
+  PresentationToolbarButton,
 } from 'bigbluebutton-html-plugin-sdk';
+import { parseTags } from '../utils';
 
 import GenericComponentLinkShare from '../generic-component/component';
 
 import { DataToGenericLink, DecreaseVolumeOnSpeakProps } from './types';
 import { ModalToShareLink } from '../modal-to-share-link/component';
+import { LinkTag } from '../modal-to-share-link/types';
 
 function GenericLinkShare(
   { pluginUuid: uuid }: DecreaseVolumeOnSpeakProps,
@@ -27,6 +32,7 @@ function GenericLinkShare(
   const { data: currentUser } = pluginApi.useCurrentUser();
   const [link, setLink] = useState<string>(null);
   const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink, deleteEntry: deleteEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const currentPresentationResponse = pluginApi.useCurrentPresentation();
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
@@ -69,6 +75,50 @@ function GenericLinkShare(
       setShowingPresentationContent(true);
     }
   };
+
+  const requestCurrentPage = (currentTxtUri: string) => fetch(currentTxtUri)
+    .then((response) => response.text());
+
+  const addButtonsToPresentationToolbar = (tags : LinkTag[]) => {
+    if (currentUser?.presenter) {
+      const buttons = tags.map((tag) => (
+        new PresentationToolbarButton({
+          label: `Play ${tag.title}`,
+          tooltip: 'A generic link tag has been detected in this slide, show it to all?',
+          onClick: () => {
+            deleteEntryUrlToGenericLink([RESET_DATA_CHANNEL]);
+            pushEntryUrlToGenericLink({
+              url: tag.presenter,
+              isUrlSameForRole: tag.presenter===tag.viewer,
+              viewerUrl: tag.viewer,
+            });
+          },
+        })
+      ));
+      pluginApi.setPresentationToolbarItems(buttons);
+    }
+  };
+
+  const handleFetchPresentationData = (
+    currentPres: CurrentPresentation,
+  ) => {
+    pluginApi.setPresentationToolbarItems([]);
+    const currentTxtUri = currentPres?.currentPage?.urlsJson?.text;
+    pluginLogger.info('Trying to fetch the slide text in the following URI:', currentTxtUri);
+    if (currentTxtUri) {
+      requestCurrentPage(currentTxtUri).then((currentPageContent) => {
+        const linkTags = parseTags(currentPageContent);
+        addButtonsToPresentationToolbar(linkTags);
+      }).catch((err) => {
+        pluginLogger.error(`Error while requesting data from bbb-web. Could not get the base text, error: ${err.message}`);
+      });
+    }
+  };
+
+  useEffect(() => {
+    const { data: currentPresentation } = currentPresentationResponse;
+    if (currentUser?.presenter) handleFetchPresentationData(currentPresentation);
+  }, [currentPresentationResponse, currentUser]);
 
   const handleSendLinkToIframe = (e: React.SyntheticEvent) => {
     e.preventDefault();

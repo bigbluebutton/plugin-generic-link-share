@@ -10,3 +10,9 @@ export interface ModalToShareLinkProps {
     handleSendLinkToIframe: (e: React.SyntheticEvent) => void;
     handleCheckboxChange: () => void
 }
+
+export interface LinkTag {
+    title: string;
+    viewer: string;
+    presenter?: string;
+}
