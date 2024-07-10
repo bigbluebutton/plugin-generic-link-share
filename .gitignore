@@ -1,2 +1,8 @@
 node_modules
 dist
+debian/.debhelper/
+debian/bbb-plugin-generic-link-share.substvars
+debian/bbb-plugin-generic-link-share/
+debian/debhelper-build-stamp
+debian/files
+
