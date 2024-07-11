@@ -89,7 +89,7 @@ function GenericLinkShare(
             deleteEntryUrlToGenericLink([RESET_DATA_CHANNEL]);
             pushEntryUrlToGenericLink({
               url: tag.presenter,
-              isUrlSameForRole: tag.presenter===tag.viewer,
+              isUrlSameForRole: tag.presenter === tag.viewer,
               viewerUrl: tag.viewer,
             });
           },
