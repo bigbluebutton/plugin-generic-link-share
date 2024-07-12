@@ -1,6 +1,6 @@
 ---
 name: BBB-Plugin-SDK
-about: Template for creating BBB-Plugin-SDK Issue (SDK to create plugins for Bigbluebutton).
+about: Template for creating BBB-Plugin-SDK Issue (SDK to create plugins for BigBlueButton).
 title: ''
 labels: 'module: client'
 assignees: ''
