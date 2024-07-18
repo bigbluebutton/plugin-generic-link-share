@@ -5,4 +5,6 @@ debian/bbb-plugin-generic-link-share.substvars
 debian/bbb-plugin-generic-link-share/
 debian/debhelper-build-stamp
 debian/files
-
+debian/**/changelog.gz
+debian/**/md5sums
+debian/**/var/www/*
