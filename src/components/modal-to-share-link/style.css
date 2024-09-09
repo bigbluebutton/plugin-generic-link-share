@@ -10,8 +10,7 @@
     padding: 2rem;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
     background-color: #FFF !important;
-    max-width: 60vw;
-    max-height: 100%;
+    width: 60vw;
     border-radius: .2rem;
     overflow: auto;
 
@@ -126,10 +125,13 @@
 }
 
 .form-to-send-url {
-    margin-left: 40px;
+    margin-left: 20px;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     width: 80%;
 }
 
@@ -142,6 +144,7 @@
 
 .clickable-close {
     align-self: flex-end;
+    margin: 5px 0 0 0;
     font-size: 40px;
     background: none;
       color: inherit;

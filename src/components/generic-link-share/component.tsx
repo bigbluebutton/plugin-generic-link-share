@@ -21,6 +21,7 @@ import GenericComponentLinkShare from '../generic-component/component';
 import { DataToGenericLink, DecreaseVolumeOnSpeakProps } from './types';
 import { ModalToShareLink } from '../modal-to-share-link/component';
 import { LinkTag } from '../modal-to-share-link/types';
+import { REGEX } from './constants';
 
 function GenericLinkShare(
   { pluginUuid: uuid }: DecreaseVolumeOnSpeakProps,
@@ -85,6 +86,7 @@ function GenericLinkShare(
         new PresentationToolbarButton({
           label: `Play ${tag.title}`,
           tooltip: 'A generic link tag has been detected in this slide, show it to all?',
+          style: {},
           onClick: () => {
             deleteEntryUrlToGenericLink([RESET_DATA_CHANNEL]);
             pushEntryUrlToGenericLink({
@@ -123,12 +125,11 @@ function GenericLinkShare(
   const handleSendLinkToIframe = (e: React.SyntheticEvent) => {
     e.preventDefault();
     let objectToDispatch: DataToGenericLink;
-    const regex = /(http|ftp|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])/g;
     if (previousModalState.isUrlSameForRole) {
       const target = e.target as typeof e.target & {
         link: { value: string };
       };
-      if (target.link.value.match(regex)) {
+      if (target.link.value.match(REGEX)) {
         objectToDispatch = {
           isUrlSameForRole: true,
           url: target.link.value,
@@ -139,7 +140,7 @@ function GenericLinkShare(
         link: { value: string };
         viewerLink: { value?: string };
       };
-      if (target.link.value.match(regex)) {
+      if (target.link.value.match(REGEX)) {
         objectToDispatch = {
           isUrlSameForRole: false,
           url: target.link.value,
@@ -156,6 +157,7 @@ function GenericLinkShare(
     }
   };
 
+  // Receiving URL data and persisting it to be inserted in the iframe later on
   useEffect(() => {
     if (
       urlToGenericLink.data
@@ -199,6 +201,7 @@ function GenericLinkShare(
     }
   }, [urlToGenericLink, currentUser]);
 
+  // Set extensible areas (depending o the role of the user)
   useEffect(() => {
     if (currentUser?.presenter) {
       const actionDropdownItemsToRender = [
@@ -216,7 +219,7 @@ function GenericLinkShare(
         }));
       }
       actionDropdownItemsToRender.push(new ActionButtonDropdownOption({
-        label: showingPresentationContent ? 'Remove link share' : 'Share link',
+        label: showingPresentationContent ? 'Remove link share' : 'Share Website Link as Content',
         icon: 'copy',
         tooltip: showingPresentationContent ? 'Remove generic link from presentation area'
           : 'Share a generic link into the presentation area',
@@ -242,11 +245,9 @@ function GenericLinkShare(
           contentFunction: (element: HTMLElement) => {
             const root = ReactDOM.createRoot(element);
             root.render(
-              <React.StrictMode>
-                <GenericComponentLinkShare
-                  link={link}
-                />
-              </React.StrictMode>,
+              <GenericComponentLinkShare
+                link={link}
+              />,
             );
           },
         }),
