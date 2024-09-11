@@ -47,7 +47,8 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
     } else setIsViewerUrlAlreadyFormated(false);
   }, [previousModalState]);
 
-  console.log('teste aqui ----> ', urlToPreview);
+  const styleOfPreviewButtonWrapper: React.CSSProperties = (urlToPreview) ? { display: 'flex', flexDirection: 'column' } : { display: 'flex' };
+  const styleOfPreviewButton: React.CSSProperties = (!urlToPreview) ? { marginLeft: '3px' } : { marginTop: '3px' };
   return (
     <ReactModal
       className="plugin-modal"
@@ -113,7 +114,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                       className="form-to-send-url-item"
                     >
                       <span className="label-form">{isUrlSameForRole ? 'URL: ' : 'Presenter Url: '}</span>
-                      <div style={{ display: 'flex' }}>
+                      <div style={styleOfPreviewButtonWrapper}>
                         <input
                           className="label-form-text-input"
                           id="link-receiver"
@@ -133,7 +134,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                           <button
                             type="button"
                             title="You can preview the link to see if it will work correctly (It is highly recommended)."
-                            style={{ marginLeft: '3px' }}
+                            style={styleOfPreviewButton}
                             className="button-style"
                             onClick={() => {
                               if (!urlToPreview || (urlToPreview && urlToPreview.isViewer)) {
@@ -144,7 +145,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                             }}
                           >
                             {
-                              (!urlToPreview || (urlToPreview && urlToPreview.isViewer)) ? 'Preview Website' : 'Remove preview'
+                              (!urlToPreview || (urlToPreview && urlToPreview.isViewer)) ? 'Show preview' : 'Hide preview'
                             }
                           </button>
                         ) : null}
@@ -158,7 +159,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                             className="form-to-send-url-item"
                           >
                             <span className="label-form">Viewer URL (It can be set later on): </span>
-                            <div style={{ display: 'flex' }}>
+                            <div style={styleOfPreviewButtonWrapper}>
                               <input
                                 className="label-form-text-input"
                                 id="extra-link-receiver"
@@ -177,9 +178,9 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                               {isViewerUrlAlreadyFormated ? (
                                 <button
                                   type="button"
-                                  style={{ marginLeft: '3px' }}
+                                  style={styleOfPreviewButton}
                                   className="button-style"
-                                  title="You can preview the link to see if it will work correctly (It is highly recommended)."
+                                  title="Click to preview the website and check if it works correctly when embedded (recommended)"
                                   onClick={() => {
                                     if (!urlToPreview?.isViewer) {
                                       setUrlToPreview({ url: viewerUrl, isViewer: true });
@@ -188,7 +189,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                                     }
                                   }}
                                 >
-                                  {!(urlToPreview?.isViewer) ? 'Preview Website' : 'Remove preview'}
+                                  {!(urlToPreview?.isViewer) ? 'Show preview' : 'Hide preview'}
                                 </button>
                               ) : null}
                             </div>

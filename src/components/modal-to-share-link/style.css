@@ -108,6 +108,8 @@
 
 .sending-button {
     padding: 5px 15px;
+    background-color: #0F70D7;
+    color: #fff;
     width: 100%;
 }
 
