@@ -49,16 +49,13 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
 
   const styleOfPreviewButtonWrapper: React.CSSProperties = (urlToPreview) ? { display: 'flex', flexDirection: 'column' } : { display: 'flex' };
   const styleOfPreviewButton: React.CSSProperties = (!urlToPreview) ? { marginLeft: '3px' } : { marginTop: '3px' };
+  const isUrlPreviewing = (urlToPreview && !urlToPreview?.isViewer);
+  const isViewerUrlPreviewing = !!urlToPreview?.isViewer;
   return (
     <ReactModal
       className="plugin-modal"
       overlayClassName="modal-overlay"
       isOpen={showModal}
-      style={(urlToPreview) ? ({
-        content: {
-          height: '50vh',
-        },
-      }) : {}}
       onRequestClose={handleCloseModal}
     >
       <button
@@ -114,6 +111,13 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                       className="form-to-send-url-item"
                     >
                       <span className="label-form">{isUrlSameForRole ? 'URL: ' : 'Presenter Url: '}</span>
+                      {isUrlAlreadyFormated
+                        ? (
+                          <span className="warning-iframe-message">
+                            You can preview the link to see if it will work correctly
+                            (It is highly recommended).
+                          </span>
+                        ) : null}
                       <div style={styleOfPreviewButtonWrapper}>
                         <input
                           className="label-form-text-input"
@@ -130,14 +134,13 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                             }));
                           }}
                         />
-                        {isUrlAlreadyFormated ? (
+                        {(isUrlAlreadyFormated || isUrlPreviewing) ? (
                           <button
                             type="button"
-                            title="You can preview the link to see if it will work correctly (It is highly recommended)."
                             style={styleOfPreviewButton}
                             className="button-style"
                             onClick={() => {
-                              if (!urlToPreview || (urlToPreview && urlToPreview.isViewer)) {
+                              if (!isUrlPreviewing) {
                                 setUrlToPreview({ url, isViewer: false });
                               } else {
                                 setUrlToPreview(null);
@@ -145,7 +148,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                             }}
                           >
                             {
-                              (!urlToPreview || (urlToPreview && urlToPreview.isViewer)) ? 'Show preview' : 'Hide preview'
+                              !isUrlPreviewing ? 'Show preview' : 'Hide preview'
                             }
                           </button>
                         ) : null}
@@ -159,6 +162,13 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                             className="form-to-send-url-item"
                           >
                             <span className="label-form">Viewer URL (It can be set later on): </span>
+                            {isViewerUrlAlreadyFormated
+                              ? (
+                                <span className="warning-iframe-message">
+                                  You can preview the link to see if it will work correctly
+                                  (It is highly recommended).
+                                </span>
+                              ) : null}
                             <div style={styleOfPreviewButtonWrapper}>
                               <input
                                 className="label-form-text-input"
@@ -175,21 +185,21 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                                   }));
                                 }}
                               />
-                              {isViewerUrlAlreadyFormated ? (
+                              {(isViewerUrlAlreadyFormated || isViewerUrlPreviewing) ? (
                                 <button
                                   type="button"
                                   style={styleOfPreviewButton}
                                   className="button-style"
                                   title="Click to preview the website and check if it works correctly when embedded (recommended)"
                                   onClick={() => {
-                                    if (!urlToPreview?.isViewer) {
+                                    if (!isViewerUrlPreviewing) {
                                       setUrlToPreview({ url: viewerUrl, isViewer: true });
                                     } else {
                                       setUrlToPreview(null);
                                     }
                                   }}
                                 >
-                                  {!(urlToPreview?.isViewer) ? 'Show preview' : 'Hide preview'}
+                                  {!isViewerUrlPreviewing ? 'Show preview' : 'Hide preview'}
                                 </button>
                               ) : null}
                             </div>
@@ -211,13 +221,17 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
           }
         </div>
         {urlToPreview ? (
-          <Iframe
-            url={urlToPreview.url}
-            width="100%"
-            height="100%"
-            display="block"
-            position="relative"
-          />
+          <div
+            style={{ height: '40vh', width: '100%' }}
+          >
+            <Iframe
+              url={urlToPreview.url}
+              width="100%"
+              height="100%"
+              display="block"
+              position="relative"
+            />
+          </div>
         ) : null}
       </div>
     </ReactModal>
