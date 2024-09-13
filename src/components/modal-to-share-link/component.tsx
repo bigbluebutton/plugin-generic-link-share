@@ -114,8 +114,8 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                   </Styled.LabelForm>
                   {isUrlAlreadyFormated && (
                     <Styled.WarningIframeMessage>
-                      You can preview the link to see if it will work correctly
-                      (It is highly recommended).
+                      Click to preview the website
+                      and check if it works correctly when embedded (recommended)
                     </Styled.WarningIframeMessage>
                   )}
                   <div style={styleOfPreviewButtonWrapper}>
@@ -154,8 +154,8 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                     <Styled.LabelForm>Viewer URL (It can be set later on): </Styled.LabelForm>
                     {isViewerUrlAlreadyFormated && (
                       <Styled.WarningIframeMessage>
-                        You can preview the link to see if it will work correctly
-                        (It is highly recommended).
+                        Click to preview the website
+                        and check if it works correctly when embedded (recommended)
                       </Styled.WarningIframeMessage>
                     )}
                     <div style={styleOfPreviewButtonWrapper}>
