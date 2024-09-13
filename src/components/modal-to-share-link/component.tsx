@@ -136,6 +136,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                     {(isUrlAlreadyFormated || isUrlPreviewing) && (
                       <Styled.ButtonStyle
                         style={styleOfPreviewButton}
+                        type="button"
                         onClick={() => {
                           if (!isUrlPreviewing) {
                             setUrlToPreview({ url, isViewer: false });
@@ -176,6 +177,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                       {(isViewerUrlAlreadyFormated || isViewerUrlPreviewing) && (
                         <Styled.ButtonStyle
                           style={styleOfPreviewButton}
+                          type="button"
                           title="Click to preview the website and check if it works correctly when embedded (recommended)"
                           onClick={() => {
                             if (!isViewerUrlPreviewing) {
