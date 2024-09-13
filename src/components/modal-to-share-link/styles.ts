@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import * as ReactModal from 'react-modal';
+import ReactModal from 'react-modal';
 import { FormToSendUrlItemProps } from './types';
 
 export const PluginModal = styled(ReactModal)`

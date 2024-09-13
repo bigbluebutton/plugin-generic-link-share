@@ -12,7 +12,7 @@ export interface ModalToShareLinkProps {
 }
 
 export interface FormToSendUrlItemProps {
-    isCheckboxItem: boolean;
+    isCheckboxItem?: boolean;
 }
 
 export interface LinkTag {
