@@ -11,6 +11,10 @@ export interface ModalToShareLinkProps {
     handleCheckboxChange: () => void
 }
 
+export interface FormToSendUrlItemProps {
+    isCheckboxItem: boolean;
+}
+
 export interface LinkTag {
     title: string;
     viewer: string;
