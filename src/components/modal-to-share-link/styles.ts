@@ -116,7 +116,23 @@ export const WarningIframeMessage = styled.p`
   font-style: italic;
 `;
 
-export const SendingButton = styled(ButtonStyle)`
+export const SendingButton = styled.input`
+  border: 3px solid transparent;
+  overflow: visible;
+  display: inline-block;
+  border-radius: 2px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 15px;
+
+  &:hover {
+    border: 3px solid #0f70d7;
+  }
   padding: 0.45rem 1rem;
   background-color: #0f70d7;
   color: #fff;
@@ -136,7 +152,7 @@ export const CurrentSlideTextContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-export const FormToSendUrl = styled.div`
+export const FormToSendUrl = styled.form`
   margin-left: 20px;
   display: flex;
   flex-direction: column;
@@ -204,7 +220,6 @@ export const ErrorSpan = styled.span`
 `;
 
 export const ErrorContentBlock = styled.div`
-  margin-left: 40px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

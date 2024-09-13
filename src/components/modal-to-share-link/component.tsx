@@ -191,7 +191,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
                     </div>
                   </Styled.FormToSendUrlItem>
                 )}
-                <Styled.SendingButton type="submit">Share as content</Styled.SendingButton>
+                <Styled.SendingButton type="submit" value="Share as content" />
               </Styled.FormToSendUrl>
             </>
           ) : (
