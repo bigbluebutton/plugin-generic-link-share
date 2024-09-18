@@ -10,9 +10,17 @@ export interface ModalToShareLinkProps {
     handleSendLinkToIframe: (e: React.SyntheticEvent) => void;
     handleCheckboxChange: () => void
 }
+export interface UrlPreview {
+    url: string;
+    isViewer: boolean;
+  }
 
 export interface FormToSendUrlItemProps {
     isCheckboxItem?: boolean;
+}
+
+export interface ButtonStyleProps {
+    color?: string;
 }
 
 export interface LinkTag {

@@ -4,13 +4,9 @@ import Iframe from 'react-iframe';
 
 import * as Styled from './styles';
 
-import { ModalToShareLinkProps } from './types';
+import { ModalToShareLinkProps, UrlPreview } from './types';
 import { REGEX } from '../generic-link-share/constants';
-
-interface UrlPreview {
-  url: string;
-  isViewer: boolean;
-}
+import { TextInputComponent } from './text-input/component';
 
 export function ModalToShareLink(props: ModalToShareLinkProps) {
   const {
@@ -47,13 +43,6 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
     } else setIsViewerUrlAlreadyFormated(false);
   }, [previousModalState]);
 
-  const styleOfPreviewButtonWrapper: React.CSSProperties = urlToPreview
-    ? { display: 'flex', flexDirection: 'column' }
-    : { display: 'flex' };
-  const styleOfPreviewButton: React.CSSProperties = !urlToPreview
-    ? { marginLeft: '3px' }
-    : { marginTop: '3px' };
-
   const isUrlPreviewing = urlToPreview && !urlToPreview?.isViewer;
   const isViewerUrlPreviewing = !!urlToPreview?.isViewer;
 
@@ -82,6 +71,11 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
           display: 'flex',
         }}
       >
+        {urlToPreview && (
+          <div style={{ height: '40vh', width: '100%' }}>
+            <Iframe url={urlToPreview.url} width="100%" height="100%" display="block" position="relative" />
+          </div>
+        )}
         <div
           style={{
             width: '100%',
@@ -92,125 +86,81 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
             justifyItems: 'center',
           }}
         >
+          <h1 style={{ margin: '0' }}>Share your link</h1>
           {!linkError ? (
-            <>
-              <h1 style={{ margin: '0' }}>Share your link</h1>
-              <Styled.FormToSendUrl onSubmit={handleSendLinkToIframe}>
-                <Styled.FormToSendUrlItem isCheckboxItem as="label" htmlFor="same-links-for-pres-viewer">
-                  <input
-                    id="same-links-for-pres-viewer"
-                    type="checkbox"
-                    name="isUrlSameForRole"
-                    checked={isUrlSameForRole}
-                    onChange={handleCheckboxChange}
-                  />
-                  <Styled.LabelFormCheckbox>
-                    Same URL for presenter and viewers
-                  </Styled.LabelFormCheckbox>
-                </Styled.FormToSendUrlItem>
-                <Styled.FormToSendUrlItem as="label" htmlFor="link-receiver">
-                  <Styled.LabelForm>
-                    {isUrlSameForRole ? 'URL: ' : 'Presenter URL: '}
-                  </Styled.LabelForm>
-                  {isUrlAlreadyFormated && (
-                    <Styled.WarningIframeMessage>
-                      Click to preview the website
-                      and check if it works correctly when embedded (recommended)
-                    </Styled.WarningIframeMessage>
-                  )}
-                  <div style={styleOfPreviewButtonWrapper}>
-                    <Styled.LabelFormTextInput
-                      id="link-receiver"
-                      value={url}
-                      type="text"
-                      name="link"
-                      placeholder="https://..."
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setPreviousModalState((p) => ({
-                          isUrlSameForRole: p?.isUrlSameForRole,
-                          url: e?.target?.value,
-                          viewerUrl: p?.viewerUrl,
-                        }));
-                      }}
-                    />
-                    {(isUrlAlreadyFormated || isUrlPreviewing) && (
-                      <Styled.ButtonStyle
-                        style={styleOfPreviewButton}
-                        type="button"
-                        onClick={() => {
-                          if (!isUrlPreviewing) {
-                            setUrlToPreview({ url, isViewer: false });
-                          } else {
-                            setUrlToPreview(null);
-                          }
-                        }}
-                      >
-                        {!isUrlPreviewing ? 'Show preview' : 'Hide preview'}
-                      </Styled.ButtonStyle>
-                    )}
-                  </div>
-                </Styled.FormToSendUrlItem>
-                {!isUrlSameForRole && (
-                  <Styled.FormToSendUrlItem as="label" htmlFor="extra-link-receiver">
-                    <Styled.LabelForm>Viewer URL (It can be set later on): </Styled.LabelForm>
-                    {isViewerUrlAlreadyFormated && (
-                      <Styled.WarningIframeMessage>
-                        Click to preview the website
-                        and check if it works correctly when embedded (recommended)
-                      </Styled.WarningIframeMessage>
-                    )}
-                    <div style={styleOfPreviewButtonWrapper}>
-                      <Styled.LabelFormTextInput
-                        id="extra-link-receiver"
-                        value={viewerUrl}
-                        type="text"
-                        name="viewerLink"
-                        placeholder="https://..."
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          setPreviousModalState((p) => ({
-                            isUrlSameForRole: p?.isUrlSameForRole,
-                            url: p?.url,
-                            viewerUrl: e?.target?.value,
-                          }));
-                        }}
-                      />
-                      {(isViewerUrlAlreadyFormated || isViewerUrlPreviewing) && (
-                        <Styled.ButtonStyle
-                          style={styleOfPreviewButton}
-                          type="button"
-                          title="Click to preview the website and check if it works correctly when embedded (recommended)"
-                          onClick={() => {
-                            if (!isViewerUrlPreviewing) {
-                              setUrlToPreview({ url: viewerUrl, isViewer: true });
-                            } else {
-                              setUrlToPreview(null);
-                            }
-                          }}
-                        >
-                          {!isViewerUrlPreviewing ? 'Show preview' : 'Hide preview'}
-                        </Styled.ButtonStyle>
-                      )}
-                    </div>
-                  </Styled.FormToSendUrlItem>
-                )}
+            <Styled.FormToSendUrl onSubmit={handleSendLinkToIframe}>
+              <Styled.FormToSendUrlItem isCheckboxItem as="label" htmlFor="same-links-for-pres-viewer">
+                <input
+                  id="same-links-for-pres-viewer"
+                  type="checkbox"
+                  name="isUrlSameForRole"
+                  checked={isUrlSameForRole}
+                  onChange={handleCheckboxChange}
+                />
+                <Styled.LabelFormCheckbox>
+                  Same URL for presenter and viewers
+                </Styled.LabelFormCheckbox>
+              </Styled.FormToSendUrlItem>
+              <TextInputComponent
+                setPreviousModalState={setPreviousModalState}
+                isUrlSameForRole={isUrlSameForRole}
+                isUrlAlreadyFormated={isUrlAlreadyFormated}
+                isUrlPreviewing={isUrlPreviewing}
+                urlToPreview={urlToPreview}
+                url={url}
+                setUrlToPreview={setUrlToPreview}
+                isViewer={false}
+              />
+              {!isUrlSameForRole && (
+                <TextInputComponent
+                  setPreviousModalState={setPreviousModalState}
+                  isUrlSameForRole={isUrlSameForRole}
+                  isUrlAlreadyFormated={isViewerUrlAlreadyFormated}
+                  isUrlPreviewing={isViewerUrlPreviewing}
+                  urlToPreview={urlToPreview}
+                  setUrlToPreview={setUrlToPreview}
+                  url={viewerUrl}
+                  isViewer
+                />
+              )}
+              {(isUrlAlreadyFormated || isViewerUrlAlreadyFormated) && (
+                <Styled.WarningIframeMessage>
+                  Click show preview to check if it
+                  the website works correctly when embedded (recommended)
+                </Styled.WarningIframeMessage>
+              )}
+              <Styled.BottomSeparator />
+              <Styled.ButtonsWrapper>
+                <Styled.ButtonStyle
+                  style={{ marginRight: '.3rem' }}
+                  color="secondary"
+                  onClick={() => {
+                    setPreviousModalState({
+                      isUrlSameForRole: true,
+                      url: '',
+                      viewerUrl: '',
+                    });
+                    setUrlToPreview(null);
+                    handleCloseModal();
+                  }}
+                >
+                  Cancel
+                </Styled.ButtonStyle>
                 <Styled.SendingButton type="submit" value="Share as content" />
-              </Styled.FormToSendUrl>
-            </>
+              </Styled.ButtonsWrapper>
+            </Styled.FormToSendUrl>
           ) : (
             <div>
               <h1>Error: </h1>
               <Styled.ErrorContentBlock>
                 <Styled.ErrorSpan>{linkError}</Styled.ErrorSpan>
-                <Styled.ButtonStyle onClick={() => setLinkError(null)}>clear</Styled.ButtonStyle>
+                <Styled.ButtonStyle onClick={() => setLinkError(null)}>
+                  clear
+                </Styled.ButtonStyle>
               </Styled.ErrorContentBlock>
             </div>
           )}
         </div>
-        {urlToPreview && (
-          <div style={{ height: '40vh', width: '100%' }}>
-            <Iframe url={urlToPreview.url} width="100%" height="100%" display="block" position="relative" />
-          </div>
-        )}
       </div>
     </Styled.PluginModal>
   );

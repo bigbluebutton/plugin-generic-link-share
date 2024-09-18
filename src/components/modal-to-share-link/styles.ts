@@ -1,6 +1,13 @@
 import styled, { css } from 'styled-components';
 import ReactModal from 'react-modal';
-import { FormToSendUrlItemProps } from './types';
+import { ButtonStyleProps, FormToSendUrlItemProps } from './types';
+
+const colorGray = 'var(--color-gray, #4E5A66)';
+const borderSizeSmall = '1px';
+const borderSize = '2px';
+const colorGrayLightest = 'var(--color-gray-lightest, #D4D9DF)';
+const lineHeightComputed = '1rem';
+const mdPaddingX = '1rem';
 
 export const PluginModal = styled(ReactModal)`
   position: relative;
@@ -59,35 +66,11 @@ export const PluginModal = styled(ReactModal)`
   }
 `;
 
-export const ModalOverlay = styled.div`
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(6, 23, 42, 0.75);
-`;
-
-export const Text = styled.p`
-  font-size: 20px;
-  margin: 0.6rem auto;
-`;
-
-export const SelectOptions = styled.div`
-  margin: 0.5rem auto;
-`;
-
 export const ButtonsWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
+  align-self: flex-end;
 `;
 
-export const ButtonStyle = styled.button`
+export const ButtonStyle = styled.button<ButtonStyleProps>`
   border: 3px solid transparent;
   overflow: visible;
   display: inline-block;
@@ -99,21 +82,58 @@ export const ButtonStyle = styled.button`
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
-  padding: 8px 15px;
+  padding: 0.45rem 1rem;
+  align-self: flex-start;
+
+  ${({ color }) => color === 'secondary' && `
+    background: transparent;
+    color: ${colorGray};
+    border: 3px solid transparent;
+    border-radius: 4px;
+  
+
+    &:focus {
+      background: hsl(210, 30%, 95%);
+      box-shadow: 0 0 0 ${borderSize} hsl(211, 87%, 80%);
+    }
+
+    &:hover {
+      background: hsl(210, 30%, 95%);
+      color: hsl(210, 13%, 35%);
+    }
+
+    &:active {
+      background: hsl(210, 30%, 89%);
+      color: hsl(210, 13%, 30%);
+    }
+
+    &:hover {
+      &:focus {
+        background: hsl(210, 30%, 95%);
+        color: hsl(210, 13%, 30%);
+        box-shadow: 0 0 0 ${borderSize} hsl(211, 87%, 80%);
+      }
+    }
+
+    &:focus {
+      &:active {
+        background: hsl(210, 30%, 89%);
+        color: hsl(210, 13%, 30%);
+        box-shadow: 0 0 0 ${borderSize} hsl(211, 87%, 80%);
+      }
+    }
+  `}
 
   &:hover {
     border: 3px solid #0f70d7;
   }
 `;
 
-export const ClosingButton = styled.div`
-  margin-top: 10px;
-`;
-
 export const WarningIframeMessage = styled.p`
   color: #4e5a66;
   font-size: 0.875rem;
   font-style: italic;
+  margin: .5rem 0 0 0;
 `;
 
 export const SendingButton = styled.input`
@@ -128,7 +148,6 @@ export const SendingButton = styled.input`
   vertical-align: middle;
   cursor: pointer;
   user-select: none;
-  padding: 8px 15px;
 
   &:hover {
     border: 3px solid #0f70d7;
@@ -143,21 +162,12 @@ export const LabelForm = styled.label`
   margin-right: 5px;
 `;
 
-export const CurrentSlideTextContainer = styled.div`
-  font-size: medium;
-  background-color: #aaa;
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  margin-bottom: 10px;
-`;
-
 export const FormToSendUrl = styled.form`
   margin-left: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100%;
   width: 80%;
 `;
@@ -174,7 +184,6 @@ export const FormToSendUrlItem = styled.div<FormToSendUrlItemProps>`
         flex-direction: column;
       `
   )}
-  margin-bottom: 10px;
   width: 100%;
 `;
 
@@ -192,12 +201,6 @@ export const ClickableClose = styled.button`
   &:hover {
     background-color: #eee;
   }
-`;
-
-export const FormCheckboxItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 `;
 
 export const LabelFormCheckbox = styled.span`
@@ -223,4 +226,13 @@ export const ErrorContentBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+`;
+
+export const BottomSeparator = styled.div`
+  position: relative;
+  width: 100%;
+  height: ${borderSizeSmall};
+  align-self: center;
+  background-color: ${colorGrayLightest};
+  margin: calc(${lineHeightComputed} * 2) ${mdPaddingX} calc(${lineHeightComputed} * 1.75) ${mdPaddingX};
 `;
