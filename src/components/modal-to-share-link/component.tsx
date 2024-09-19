@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import Iframe from 'react-iframe';
 
 import * as Styled from './styles';
 
-import { ModalToShareLinkProps, UrlPreview } from './types';
+import { ModalToShareLinkProps } from './types';
 import { REGEX } from '../generic-link-share/constants';
-import { TextInputComponent } from './text-input/component';
+import { LinkForm } from './link-form/component';
 
 export function ModalToShareLink(props: ModalToShareLinkProps) {
   const {
@@ -23,10 +22,7 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
   const [isUrlAlreadyFormated, setIsUrlAlreadyFormated] = useState<boolean>(false);
   const [isViewerUrlAlreadyFormated, setIsViewerUrlAlreadyFormated] = useState<boolean>();
 
-  const [urlToPreview, setUrlToPreview] = useState<UrlPreview>(null);
-
   const {
-    isUrlSameForRole = true,
     url: incomingUrl,
     viewerUrl: incomingViewerUrl,
   } = previousModalState;
@@ -42,9 +38,6 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
       setIsViewerUrlAlreadyFormated(true);
     } else setIsViewerUrlAlreadyFormated(false);
   }, [previousModalState]);
-
-  const isUrlPreviewing = urlToPreview && !urlToPreview?.isViewer;
-  const isViewerUrlPreviewing = !!urlToPreview?.isViewer;
 
   return (
     <Styled.PluginModal
@@ -68,14 +61,11 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
           height: '100%',
           alignItems: 'center',
           justifyContent: 'center',
+          flexDirection: 'column',
           display: 'flex',
         }}
       >
-        {urlToPreview && (
-          <div style={{ height: '40vh', width: '100%' }}>
-            <Iframe url={urlToPreview.url} width="100%" height="100%" display="block" position="relative" />
-          </div>
-        )}
+        <h1 style={{ margin: '5px 0' }}>Share your link</h1>
         <div
           style={{
             width: '100%',
@@ -86,69 +76,16 @@ export function ModalToShareLink(props: ModalToShareLinkProps) {
             justifyItems: 'center',
           }}
         >
-          <h1 style={{ margin: '0' }}>Share your link</h1>
           {!linkError ? (
-            <Styled.FormToSendUrl onSubmit={handleSendLinkToIframe}>
-              <Styled.FormToSendUrlItem isCheckboxItem as="label" htmlFor="same-links-for-pres-viewer">
-                <input
-                  id="same-links-for-pres-viewer"
-                  type="checkbox"
-                  name="isUrlSameForRole"
-                  checked={isUrlSameForRole}
-                  onChange={handleCheckboxChange}
-                />
-                <Styled.LabelFormCheckbox>
-                  Same URL for presenter and viewers
-                </Styled.LabelFormCheckbox>
-              </Styled.FormToSendUrlItem>
-              <TextInputComponent
-                setPreviousModalState={setPreviousModalState}
-                isUrlSameForRole={isUrlSameForRole}
-                isUrlAlreadyFormated={isUrlAlreadyFormated}
-                isUrlPreviewing={isUrlPreviewing}
-                urlToPreview={urlToPreview}
-                url={url}
-                setUrlToPreview={setUrlToPreview}
-                isViewer={false}
-              />
-              {!isUrlSameForRole && (
-                <TextInputComponent
-                  setPreviousModalState={setPreviousModalState}
-                  isUrlSameForRole={isUrlSameForRole}
-                  isUrlAlreadyFormated={isViewerUrlAlreadyFormated}
-                  isUrlPreviewing={isViewerUrlPreviewing}
-                  urlToPreview={urlToPreview}
-                  setUrlToPreview={setUrlToPreview}
-                  url={viewerUrl}
-                  isViewer
-                />
-              )}
-              {(isUrlAlreadyFormated || isViewerUrlAlreadyFormated) && (
-                <Styled.WarningIframeMessage>
-                  Click show preview to check if it
-                  the website works correctly when embedded (recommended)
-                </Styled.WarningIframeMessage>
-              )}
-              <Styled.BottomSeparator />
-              <Styled.ButtonsWrapper>
-                <Styled.ButtonStyle
-                  style={{ marginRight: '.3rem' }}
-                  color="secondary"
-                  onClick={() => {
-                    setPreviousModalState({
-                      isUrlSameForRole: true,
-                      url: '',
-                      viewerUrl: '',
-                    });
-                    setUrlToPreview(null);
-                    handleCloseModal();
-                  }}
-                >
-                  Cancel
-                </Styled.ButtonStyle>
-                <Styled.SendingButton type="submit" value="Share as content" />
-              </Styled.ButtonsWrapper>
-            </Styled.FormToSendUrl>
+            <LinkForm
+              previousModalState={previousModalState}
+              setPreviousModalState={setPreviousModalState}
+              handleCloseModal={handleCloseModal}
+              handleSendLinkToIframe={handleSendLinkToIframe}
+              handleCheckboxChange={handleCheckboxChange}
+              isUrlAlreadyFormated={isUrlAlreadyFormated}
+              isViewerUrlAlreadyFormated={isViewerUrlAlreadyFormated}
+            />
           ) : (
             <div>
               <h1>Error: </h1>

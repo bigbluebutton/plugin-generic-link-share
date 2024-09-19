@@ -1,4 +1,4 @@
-import { DataToGenericLink } from '../../generic-link-share/types';
+import { DataToGenericLink } from '../../../generic-link-share/types';
 import { UrlPreview } from '../types';
 
 export interface TextInputComponentProps {
@@ -14,8 +14,4 @@ export interface TextInputComponentProps {
 
 export interface ButtonStyleProps {
   color?: string;
-}
-
-export interface FormToSendUrlItemProps {
-  isCheckboxItem?: boolean;
 }

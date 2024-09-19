@@ -256,7 +256,6 @@ function GenericLinkShare(
       pluginApi.setGenericContentItems([]);
     }
   }, [link]);
-
   return (
     <ModalToShareLink
       {...{

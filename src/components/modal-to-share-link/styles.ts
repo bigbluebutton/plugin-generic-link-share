@@ -1,13 +1,9 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import ReactModal from 'react-modal';
-import { ButtonStyleProps, FormToSendUrlItemProps } from './types';
+import { ButtonStyleProps } from './types';
 
 const colorGray = 'var(--color-gray, #4E5A66)';
-const borderSizeSmall = '1px';
 const borderSize = '2px';
-const colorGrayLightest = 'var(--color-gray-lightest, #D4D9DF)';
-const lineHeightComputed = '1rem';
-const mdPaddingX = '1rem';
 
 export const PluginModal = styled(ReactModal)`
   position: relative;
@@ -64,10 +60,6 @@ export const PluginModal = styled(ReactModal)`
   @media only screen and (min-width: 40.063em) {
     max-width: 80vw;
   }
-`;
-
-export const ButtonsWrapper = styled.div`
-  align-self: flex-end;
 `;
 
 export const ButtonStyle = styled.button<ButtonStyleProps>`
@@ -129,64 +121,6 @@ export const ButtonStyle = styled.button<ButtonStyleProps>`
   }
 `;
 
-export const WarningIframeMessage = styled.p`
-  color: #4e5a66;
-  font-size: 0.875rem;
-  font-style: italic;
-  margin: .5rem 0 0 0;
-`;
-
-export const SendingButton = styled.input`
-  border: 3px solid transparent;
-  overflow: visible;
-  display: inline-block;
-  border-radius: 2px;
-  font-weight: 600;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none;
-
-  &:hover {
-    border: 3px solid #0f70d7;
-  }
-  padding: 0.45rem 1rem;
-  background-color: #0f70d7;
-  color: #fff;
-  font-size: calc(1rem * 0.85);
-`;
-
-export const LabelForm = styled.label`
-  margin-right: 5px;
-`;
-
-export const FormToSendUrl = styled.form`
-  margin-left: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100%;
-  width: 80%;
-`;
-
-export const FormToSendUrlItem = styled.div<FormToSendUrlItemProps>`
-  display: flex;
-  ${({ isCheckboxItem }) => (
-    isCheckboxItem
-      ? css`
-        flex-direction: row;
-        align-items: center;
-      `
-      : css`
-        flex-direction: column;
-      `
-  )}
-  width: 100%;
-`;
-
 export const ClickableClose = styled.button`
   align-self: flex-end;
   margin: 5px 0 0 0;
@@ -203,18 +137,6 @@ export const ClickableClose = styled.button`
   }
 `;
 
-export const LabelFormCheckbox = styled.span`
-  margin-left: 10px;
-`;
-
-export const LabelFormTextInput = styled.input`
-  width: 100%;
-
-  &::placeholder {
-    color: #555;
-  }
-`;
-
 export const ErrorSpan = styled.span`
   background-color: rgba(223, 39, 33, 0.25);
   border-radius: 5px;
@@ -226,13 +148,4 @@ export const ErrorContentBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-`;
-
-export const BottomSeparator = styled.div`
-  position: relative;
-  width: 100%;
-  height: ${borderSizeSmall};
-  align-self: center;
-  background-color: ${colorGrayLightest};
-  margin: calc(${lineHeightComputed} * 2) ${mdPaddingX} calc(${lineHeightComputed} * 1.75) ${mdPaddingX};
 `;

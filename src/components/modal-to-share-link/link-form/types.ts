@@ -1,19 +1,23 @@
-import { DataToGenericLink } from '../generic-link-share/types';
+import { DataToGenericLink } from '../../generic-link-share/types';
 
-export interface ModalToShareLinkProps {
+export interface LinkFormProps {
     previousModalState: DataToGenericLink;
     setPreviousModalState: React.Dispatch<React.SetStateAction<DataToGenericLink>>;
-    showModal: boolean;
     handleCloseModal: () => void;
-    linkError: string;
-    setLinkError: React.Dispatch<React.SetStateAction<string>>;
     handleSendLinkToIframe: (e: React.SyntheticEvent) => void;
-    handleCheckboxChange: () => void
+    handleCheckboxChange: () => void;
+    isUrlAlreadyFormated: boolean;
+    isViewerUrlAlreadyFormated: boolean;
 }
+
 export interface UrlPreview {
     url: string;
     isViewer: boolean;
-  }
+}
+
+export interface FormToSendUrlItemProps {
+    isCheckboxItem?: boolean;
+}
 
 export interface ButtonStyleProps {
     color?: string;
