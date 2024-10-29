@@ -1,5 +1,6 @@
 node_modules
 dist
+dist-tsc/
 debian/.debhelper/
 debian/bbb-plugin-generic-link-share.substvars
 debian/bbb-plugin-generic-link-share/
