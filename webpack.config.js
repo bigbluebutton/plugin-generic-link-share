@@ -20,15 +20,15 @@ module.exports = {
     client: {
       overlay: false,
     },
-    onBeforeSetupMiddleware: (devServer) => {
+    setupMiddlewares: (middlewares, devServer) => {
       if (!devServer) {
         throw new Error('webpack-dev-server is not defined');
       }
-
-      // Serve manifest.json from the project root when requested at /manifest.json
+      // Serve manifest.json directly from the project root
       devServer.app.get('/manifest.json', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'manifest.json'));
       });
+      return middlewares;
     },
   },
   module: {
