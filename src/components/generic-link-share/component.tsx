@@ -249,6 +249,7 @@ function GenericLinkShare(
                 link={link}
               />,
             );
+            return root;
           },
         }),
       ])[0]);
