@@ -14,9 +14,9 @@ npm ci
 npm run build-bundle
 ```
 
-The above command will generate the `dist` folder, containing the bundled JavaScript file named `GenericLinkShare.js`. This file can be hosted on any HTTPS server along with its `manifest.json`.
+The above commands will generate the `dist` folder, containing the bundled JavaScript file named `GenericLinkShare.js`. This file can be hosted on any HTTPS server along with its `manifest.json`.
 
-If you install the Plugin separated to the manifest, remember to change the `javascriptEntrypointUrl` in the `manifest.json` to the correct endpoint.
+If you install the plugin separated from the manifest, remember to change the `javascriptEntrypointUrl` in the `manifest.json` to the correct endpoint.
 
 To use the plugin in BigBlueButton, send this parameter along in create call:
 
