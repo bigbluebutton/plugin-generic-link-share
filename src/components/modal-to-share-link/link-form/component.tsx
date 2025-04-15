@@ -30,6 +30,14 @@ export function LinkForm(props: LinkFormProps) {
 
   const isUrlPreviewing = urlToPreview && !urlToPreview?.isViewer;
   const isViewerUrlPreviewing = !!urlToPreview?.isViewer;
+  React.useEffect(() => {
+    const hasUrlChange = urlToPreview && ((
+      urlToPreview.isViewer && urlToPreview.url !== previousModalState.viewerUrl
+    ) || (!urlToPreview.isViewer && urlToPreview.url !== previousModalState.url));
+    if (hasUrlChange) {
+      setUrlToPreview(null);
+    }
+  }, [previousModalState]);
   return (
     <Styled.FormToSendUrl onSubmit={handleSendLinkToIframe}>
       <Styled.FormWrapper>
