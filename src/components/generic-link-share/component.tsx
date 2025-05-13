@@ -7,7 +7,7 @@ import {
   BbbPluginSdk,
   GenericContentMainArea,
   PluginApi,
-  LayoutPresentatioAreaUiDataNames,
+  LayoutPresentationAreaUiDataNames,
   UiLayouts,
   CurrentPresentation,
   RESET_DATA_CHANNEL,
@@ -41,7 +41,7 @@ function GenericLinkShare(
   });
   const [genericContentd, setGenericContentd] = useState<string>('');
 
-  const currentLayout = pluginApi.useUiData(LayoutPresentatioAreaUiDataNames.CURRENT_ELEMENT, [{
+  const currentLayout = pluginApi.useUiData(LayoutPresentationAreaUiDataNames.CURRENT_ELEMENT, [{
     isOpen: true,
     currentElement: UiLayouts.WHITEBOARD,
   }]);
