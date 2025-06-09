@@ -22,29 +22,29 @@ import { DataToGenericLink, DecreaseVolumeOnSpeakProps } from './types';
 import { ModalToShareLink } from '../modal-to-share-link/component';
 import { LinkTag } from '../modal-to-share-link/types';
 import { REGEX } from './constants';
+import { replaceUrlPlaceholders } from './utils';
 
 function GenericLinkShare(
   { pluginUuid: uuid }: DecreaseVolumeOnSpeakProps,
 ): React.ReactElement {
   BbbPluginSdk.initialize(uuid);
-  const [showModal, setShowModal] = useState<boolean>(false);
   const pluginApi: PluginApi = BbbPluginSdk.getPluginApi(uuid);
-  const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const { data: currentUser } = pluginApi.useCurrentUser();
-  const [link, setLink] = useState<string>(null);
   const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink, deleteEntry: deleteEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
   const currentPresentationResponse = pluginApi.useCurrentPresentation();
+  const currentLayout = pluginApi.useUiData(LayoutPresentatioAreaUiDataNames.CURRENT_ELEMENT, [{
+    isOpen: true,
+    currentElement: UiLayouts.WHITEBOARD,
+  }]);
+  const [genericContentd, setGenericContentd] = useState<string>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showingPresentationContent, setShowingPresentationContent] = useState(false);
+  const [link, setLink] = useState<string>(null);
   const [linkError, setLinkError] = useState<string>(null);
   const [previousModalState, setPreviousModalState] = useState<DataToGenericLink>({
     isUrlSameForRole: true,
     url: null,
   });
-  const [genericContentd, setGenericContentd] = useState<string>('');
-
-  const currentLayout = pluginApi.useUiData(LayoutPresentationAreaUiDataNames.CURRENT_ELEMENT, [{
-    isOpen: true,
-    currentElement: UiLayouts.WHITEBOARD,
-  }]);
 
   useEffect(() => {
     const isGenericComponentInPile = currentLayout.some((gc) => (
@@ -246,7 +246,12 @@ function GenericLinkShare(
             const root = ReactDOM.createRoot(element);
             root.render(
               <GenericComponentLinkShare
-                link={link}
+                link={link && currentUser ? replaceUrlPlaceholders(link, {
+                  name: currentUser?.name ?? '',
+                  extId: currentUser?.extId ?? '',
+                  role: currentUser?.role ?? '',
+                  presenter: !!currentUser?.presenter,
+                }) : link}
               />,
             );
             return root;
