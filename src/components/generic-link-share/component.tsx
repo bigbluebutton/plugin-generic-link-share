@@ -32,11 +32,11 @@ function GenericLinkShare(
   const { data: currentUser } = pluginApi.useCurrentUser();
   const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink, deleteEntry: deleteEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
   const currentPresentationResponse = pluginApi.useCurrentPresentation();
-  const currentLayout = pluginApi.useUiData(LayoutPresentatioAreaUiDataNames.CURRENT_ELEMENT, [{
+  const currentLayout = pluginApi.useUiData(LayoutPresentationAreaUiDataNames.CURRENT_ELEMENT, [{
     isOpen: true,
     currentElement: UiLayouts.WHITEBOARD,
   }]);
-  const [genericContentd, setGenericContentd] = useState<string>('');
+  const [genericContentId, setGenericContentId] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showingPresentationContent, setShowingPresentationContent] = useState(false);
   const [link, setLink] = useState<string>(null);
@@ -49,7 +49,7 @@ function GenericLinkShare(
   useEffect(() => {
     const isGenericComponentInPile = currentLayout.some((gc) => (
       gc.currentElement === UiLayouts.GENERIC_CONTENT
-      && gc.genericContentId === genericContentd
+      && gc.genericContentId === genericContentId
     ));
     if (isGenericComponentInPile) {
       setShowingPresentationContent(true);
@@ -240,7 +240,7 @@ function GenericLinkShare(
   useEffect(() => {
     if (link && link !== '') {
       pluginApi.setGenericContentItems([]);
-      setGenericContentd(pluginApi.setGenericContentItems([
+      setGenericContentId(pluginApi.setGenericContentItems([
         new GenericContentMainArea({
           contentFunction: (element: HTMLElement) => {
             const root = ReactDOM.createRoot(element);
