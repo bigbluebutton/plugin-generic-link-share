@@ -18,4 +18,13 @@ interface DataToGenericLink {
     viewerUrl?: string
 }
 
+export interface UserMetadata {
+    parameter: string;
+    value: string;
+}
+
+export interface UserMetadataGraphqlResponse {
+    user_metadata: UserMetadata[];
+}
+
 export { DecreaseVolumeOnSpeakProps, ExternalVideoMeetingSubscription, DataToGenericLink };
