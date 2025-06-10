@@ -18,11 +18,12 @@ import { parseTags } from '../utils';
 
 import GenericComponentLinkShare from '../generic-component/component';
 
-import { DataToGenericLink, DecreaseVolumeOnSpeakProps } from './types';
+import { DataToGenericLink, DecreaseVolumeOnSpeakProps, UserMetadataGraphqlResponse } from './types';
 import { ModalToShareLink } from '../modal-to-share-link/component';
 import { LinkTag } from '../modal-to-share-link/types';
 import { REGEX } from './constants';
-import { replaceUrlPlaceholders } from './utils';
+import { replaceUrlPlaceholders, replaceUrlPlaceholdersSecure } from './utils';
+import { USER_METADATA } from './subscription';
 
 function GenericLinkShare(
   { pluginUuid: uuid }: DecreaseVolumeOnSpeakProps,
@@ -45,6 +46,17 @@ function GenericLinkShare(
     isUrlSameForRole: true,
     url: null,
   });
+
+  const userMetaDataSubscription = pluginApi
+    .useCustomSubscription<UserMetadataGraphqlResponse>(USER_METADATA);
+  const { data } = userMetaDataSubscription;
+
+  const currentUserPlaceholders = {
+    name: currentUser?.name ?? '',
+    extId: currentUser?.extId ?? '',
+    role: currentUser?.role ?? '',
+    presenter: !!currentUser?.presenter,
+  };
 
   useEffect(() => {
     const isGenericComponentInPile = currentLayout.some((gc) => (
@@ -246,12 +258,9 @@ function GenericLinkShare(
             const root = ReactDOM.createRoot(element);
             root.render(
               <GenericComponentLinkShare
-                link={link && currentUser ? replaceUrlPlaceholders(link, {
-                  name: currentUser?.name ?? '',
-                  extId: currentUser?.extId ?? '',
-                  role: currentUser?.role ?? '',
-                  presenter: !!currentUser?.presenter,
-                }) : link}
+                link={link && currentUser && data.user_metadata.length !== 0
+                  ? replaceUrlPlaceholdersSecure(link, currentUserPlaceholders, data.user_metadata)
+                  : replaceUrlPlaceholders(link, currentUserPlaceholders)}
               />,
             );
             return root;
