@@ -7,6 +7,8 @@ type PlaceholderValues = {
   presenter: boolean;
 };
 
+const DEFAULT_PREFIX = 'genericLinkShare';
+
 export function replaceUrlPlaceholders(url: string, values: PlaceholderValues): string {
   return url
     .replace(/{name}/g, encodeURIComponent(values.name))
@@ -20,17 +22,13 @@ export function replaceUrlPlaceholdersSecure(
   placeholderValues?: PlaceholderValues,
   userdataParams?: UserMetadata[],
 ): string {
-  // list available userdata parameters
-  const allowedUserdataParams = ['plugin_generic_link_share_mykey'];
-
-  // filter allowed userdata parameters
-  const foundUserdataParams = userdataParams?.filter(
-    (entry) => allowedUserdataParams.includes(entry.parameter),
-  ) || [];
+  const allowedUserdataParams = userdataParams?.filter(
+    (entry) => entry.parameter.startsWith(DEFAULT_PREFIX),
+  );
 
   let result = replaceUrlPlaceholders(url, placeholderValues);
 
-  foundUserdataParams.forEach((userdata) => {
+  allowedUserdataParams.forEach((userdata) => {
     const regexPattern = userdata.parameter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     result = result.replace(
       new RegExp(regexPattern, 'g'),
