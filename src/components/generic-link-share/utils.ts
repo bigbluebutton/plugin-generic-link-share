@@ -9,32 +9,34 @@ type PlaceholderValues = {
 
 const DEFAULT_PREFIX = 'genericLinkShare';
 
-export function replaceUrlPlaceholders(url: string, values: PlaceholderValues): string {
-  return url
-    .replace(/{name}/g, encodeURIComponent(values.name))
-    .replace(/{extId}/g, encodeURIComponent(values.extId))
-    .replace(/{role}/g, encodeURIComponent(values.role))
-    .replace(/{presenter}/g, encodeURIComponent(String(values.presenter)));
-}
-
 export function replaceUrlPlaceholdersSecure(
   url: string,
   placeholderValues?: PlaceholderValues,
   userdataParams?: UserMetadata[],
 ): string {
-  const allowedUserdataParams = userdataParams?.filter(
-    (entry) => entry.parameter.startsWith(DEFAULT_PREFIX),
-  );
+  let result = url;
 
-  let result = replaceUrlPlaceholders(url, placeholderValues);
+  if (placeholderValues) {
+    result = result
+      .replace(/{name}/g, encodeURIComponent(placeholderValues.name))
+      .replace(/{extId}/g, encodeURIComponent(placeholderValues.extId))
+      .replace(/{role}/g, encodeURIComponent(placeholderValues.role))
+      .replace(/{presenter}/g, encodeURIComponent(String(placeholderValues.presenter)));
+  }
 
-  allowedUserdataParams.forEach((userdata) => {
-    const regexPattern = userdata.parameter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    result = result.replace(
-      new RegExp(regexPattern, 'g'),
-      encodeURIComponent(userdata.value),
+  if (userdataParams) {
+    const allowedUserdataParams = userdataParams?.filter(
+      (entry) => entry.parameter.startsWith(DEFAULT_PREFIX),
     );
-  });
+
+    allowedUserdataParams.forEach((userdata) => {
+      const userdataUrlParameterPattern = `{${userdata.parameter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}}`;
+      const userdataUrlValuePattern = userdata.value.replace(/[.*+?^${}()|[\]\\]/g, '');
+
+      result = result
+        .replace(new RegExp(userdataUrlParameterPattern, 'g'), encodeURIComponent(userdataUrlValuePattern));
+    });
+  }
 
   return result;
 }

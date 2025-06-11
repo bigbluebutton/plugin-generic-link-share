@@ -22,7 +22,7 @@ import { DataToGenericLink, DecreaseVolumeOnSpeakProps, UserMetadataGraphqlRespo
 import { ModalToShareLink } from '../modal-to-share-link/component';
 import { LinkTag } from '../modal-to-share-link/types';
 import { REGEX } from './constants';
-import { replaceUrlPlaceholders, replaceUrlPlaceholdersSecure } from './utils';
+import { replaceUrlPlaceholdersSecure } from './utils';
 import { USER_METADATA } from './subscription';
 
 function GenericLinkShare(
@@ -259,8 +259,12 @@ function GenericLinkShare(
             root.render(
               <GenericComponentLinkShare
                 link={link && currentUser && data.user_metadata.length !== 0
-                  ? replaceUrlPlaceholdersSecure(link, currentUserPlaceholders, data.user_metadata)
-                  : replaceUrlPlaceholders(link, currentUserPlaceholders)}
+                  ? replaceUrlPlaceholdersSecure(
+                    link,
+                    currentUserPlaceholders,
+                    data.user_metadata,
+                  )
+                  : link}
               />,
             );
             return root;
