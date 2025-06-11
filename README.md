@@ -40,7 +40,12 @@ When sharing a link, you can use placeholders in the URL that will be dynamicall
 - `{genericLinkShare_KEY}`: Any additional user metadata field, where `KEY` is the metadata key name (e.g., `{genericLinkShare_info}` will be replaced with the user's *info* if available)
 
 **Note:**  
-To use user metadata as a placeholder, the metadata key must start with the prefix `genericLinkShare_`. For example, if you pass `userdata-genericLinkShare_mykey=12345` when joining, you can use `{genericLinkShare_mykey}` in your shared URL.
+To use user metadata as a placeholder, the metadata key must start with the prefix `genericLinkShare_`. 
+For example, if the metadata is `{genericLinkShare_mykey}`, in the join call, it is necessary to send:
+
+```
+  userdata-genericLinkShare_mykey=abc_example
+```
 
 
 If additional user metadata is available, you can also use placeholders matching those metadata keys.
