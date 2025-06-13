@@ -18,6 +18,13 @@ interface DataToGenericLink {
     viewerUrl?: string
 }
 
+export interface CurrentUserData {
+  name: string;
+  extId: string;
+  role: string;
+  presenter: boolean;
+}
+
 export interface UserMetadata {
     parameter: string;
     value: string;

@@ -1,27 +1,23 @@
-import { UserMetadata } from './types';
+import { CurrentUserData, UserMetadata } from './types';
 
-type PlaceholderValues = {
-  name: string;
-  extId: string;
-  role: string;
-  presenter: boolean;
-};
+type PlaceholderEntry = {
+  placeholder: string;
+  value: string | boolean;
+}
 
 const DEFAULT_PREFIX = 'genericLinkShare';
 
-export function replaceUrlPlaceholdersSecure(
-  url: string,
-  placeholderValues?: PlaceholderValues,
+export function mergePlaceholdersList(
+  currentUserParams?: CurrentUserData,
   userdataParams?: UserMetadata[],
-): string {
-  let result = url;
+): PlaceholderEntry[] { // nao esqueça de typar a função
+  const placeholdersList: PlaceholderEntry[] = [];
 
-  if (placeholderValues) {
-    result = result
-      .replace(/{name}/g, encodeURIComponent(placeholderValues.name))
-      .replace(/{extId}/g, encodeURIComponent(placeholderValues.extId))
-      .replace(/{role}/g, encodeURIComponent(placeholderValues.role))
-      .replace(/{presenter}/g, encodeURIComponent(String(placeholderValues.presenter)));
+  if (currentUserParams) {
+    Object.entries(currentUserParams).forEach(([key, value]) => {
+      const placeholder = `{${key}}`;
+      placeholdersList.push({ placeholder, value });
+    });
   }
 
   if (userdataParams) {
@@ -33,10 +29,24 @@ export function replaceUrlPlaceholdersSecure(
       const userdataUrlParameterPattern = `{${userdata.parameter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}}`;
       const userdataUrlValuePattern = userdata.value.replace(/[.*+?^${}()|[\]\\]/g, '');
 
-      result = result
-        .replace(new RegExp(userdataUrlParameterPattern, 'g'), encodeURIComponent(userdataUrlValuePattern));
+      placeholdersList
+        .push({ placeholder: userdataUrlParameterPattern, value: userdataUrlValuePattern });
     });
   }
+
+  return placeholdersList;
+}
+
+export function replaceUrlPlaceholders(
+  url: string,
+  placeholdersList: PlaceholderEntry[],
+): string {
+  let result = url;
+
+  placeholdersList.forEach(({ placeholder, value }) => {
+    const regex = new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    result = result.replace(regex, encodeURIComponent(String(value)));
+  });
 
   return result;
 }

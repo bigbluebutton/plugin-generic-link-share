@@ -18,11 +18,16 @@ import { parseTags } from '../utils';
 
 import GenericComponentLinkShare from '../generic-component/component';
 
-import { DataToGenericLink, DecreaseVolumeOnSpeakProps, UserMetadataGraphqlResponse } from './types';
+import {
+  CurrentUserData,
+  DataToGenericLink,
+  DecreaseVolumeOnSpeakProps,
+  UserMetadataGraphqlResponse,
+} from './types';
 import { ModalToShareLink } from '../modal-to-share-link/component';
 import { LinkTag } from '../modal-to-share-link/types';
 import { REGEX } from './constants';
-import { replaceUrlPlaceholdersSecure } from './utils';
+import { mergePlaceholdersList, replaceUrlPlaceholders } from './utils';
 import { USER_METADATA } from './subscription';
 
 function GenericLinkShare(
@@ -30,8 +35,11 @@ function GenericLinkShare(
 ): React.ReactElement {
   BbbPluginSdk.initialize(uuid);
   const pluginApi: PluginApi = BbbPluginSdk.getPluginApi(uuid);
+  const userMetaDataSubscription = pluginApi
+    .useCustomSubscription<UserMetadataGraphqlResponse>(USER_METADATA);
   const { data: currentUser } = pluginApi.useCurrentUser();
   const { data: urlToGenericLink, pushEntry: pushEntryUrlToGenericLink, deleteEntry: deleteEntryUrlToGenericLink } = pluginApi.useDataChannel<DataToGenericLink>('urlToGenericLink');
+  const { data: userData } = userMetaDataSubscription;
   const currentPresentationResponse = pluginApi.useCurrentPresentation();
   const currentLayout = pluginApi.useUiData(LayoutPresentatioAreaUiDataNames.CURRENT_ELEMENT, [{
     isOpen: true,
@@ -47,11 +55,7 @@ function GenericLinkShare(
     url: null,
   });
 
-  const userMetaDataSubscription = pluginApi
-    .useCustomSubscription<UserMetadataGraphqlResponse>(USER_METADATA);
-  const { data } = userMetaDataSubscription;
-
-  const currentUserPlaceholders = {
+  const currentUserPlaceholders: CurrentUserData = {
     name: currentUser?.name ?? '',
     extId: currentUser?.extId ?? '',
     role: currentUser?.role ?? '',
@@ -251,6 +255,10 @@ function GenericLinkShare(
 
   useEffect(() => {
     if (link && link !== '') {
+      const placeholdersList = mergePlaceholdersList(
+        currentUserPlaceholders,
+        userData.user_metadata,
+      );
       pluginApi.setGenericContentItems([]);
       setGenericContentd(pluginApi.setGenericContentItems([
         new GenericContentMainArea({
@@ -258,13 +266,7 @@ function GenericLinkShare(
             const root = ReactDOM.createRoot(element);
             root.render(
               <GenericComponentLinkShare
-                link={link && currentUser && data.user_metadata.length !== 0
-                  ? replaceUrlPlaceholdersSecure(
-                    link,
-                    currentUserPlaceholders,
-                    data.user_metadata,
-                  )
-                  : link}
+                link={replaceUrlPlaceholders(link, placeholdersList)}
               />,
             );
             return root;
