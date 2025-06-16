@@ -34,4 +34,9 @@ export interface UserMetadataGraphqlResponse {
     user_metadata: UserMetadata[];
 }
 
+export interface PlaceholderEntry {
+  placeholder: string;
+  value: string | boolean;
+}
+
 export { DecreaseVolumeOnSpeakProps, ExternalVideoMeetingSubscription, DataToGenericLink };

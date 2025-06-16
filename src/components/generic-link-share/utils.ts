@@ -1,16 +1,11 @@
-import { CurrentUserData, UserMetadata } from './types';
-
-type PlaceholderEntry = {
-  placeholder: string;
-  value: string | boolean;
-}
+import { CurrentUserData, PlaceholderEntry, UserMetadata } from './types';
 
 const DEFAULT_PREFIX = 'genericLinkShare';
 
 export function mergePlaceholdersList(
   currentUserParams?: CurrentUserData,
   userdataParams?: UserMetadata[],
-): PlaceholderEntry[] { // nao esqueça de typar a função
+): PlaceholderEntry[] {
   const placeholdersList: PlaceholderEntry[] = [];
 
   if (currentUserParams) {
